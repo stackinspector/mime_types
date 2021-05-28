@@ -26,7 +26,7 @@ const TEXT_TYPE_REGEXP = /^text\//i
  * Get the default charset for a MIME type.
  */
 
-export function charset (type: string): boolean | string {
+export function charset (type: string): false | string {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -51,7 +51,7 @@ export function charset (type: string): boolean | string {
  * Create a full Content-Type header given a MIME type or extension.
  */
 
-export function contentType (str: string): boolean | string {
+export function contentType (str: string): false | string {
   // TODO: should this even be in this module?
   if (!str || typeof str !== 'string') {
     return false
@@ -78,7 +78,7 @@ export function contentType (str: string): boolean | string {
  * Get the default extension for a MIME type.
  */
 
-export function extension (type: string): boolean | string {
+export function extension (type: string): false | string {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -100,7 +100,7 @@ export function extension (type: string): boolean | string {
  * Lookup the MIME type for a file path/extension.
  */
 
-export function lookup (path: string): boolean | string {
+export function lookup (path: string): false | string {
   if (!path || typeof path !== 'string') {
     return false
   }
