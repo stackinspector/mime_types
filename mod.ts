@@ -5,35 +5,22 @@
  * MIT Licensed
  */
 
-'use strict'
-
 /**
  * Module dependencies.
  * @private
  */
 
-var db = require('mime-db')
-var extname = require('path').extname
+const MIME_DB_URL = 'https://cdn.jsdelivr.net/gh/jshttp/mime-db@master/db.json'
+const db = await (await fetch(MIME_DB_URL)).json()
+import { extname } from 'https://deno.land/std@0.97.0/path/mod.ts'
 
 /**
  * Module variables.
  * @private
  */
 
-var EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/
-var TEXT_TYPE_REGEXP = /^text\//i
-
-/**
- * Module exports.
- * @public
- */
-
-export const charsets = { lookup: charset }
-export const extensions = Object.create(null)
-export const types = Object.create(null)
-
-// Populate the extensions/types maps
-populateMaps(extensions, types)
+const EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/
+const TEXT_TYPE_REGEXP = /^text\//i
 
 /**
  * Get the default charset for a MIME type.
@@ -45,8 +32,8 @@ export function charset (type: string): boolean | string {
   }
 
   // TODO: use media-typer
-  var match = EXTRACT_TYPE_REGEXP.exec(type)
-  var mime = match && db[match[1].toLowerCase()]
+  let match = EXTRACT_TYPE_REGEXP.exec(type)
+  let mime = match && db[match[1].toLowerCase()]
 
   if (mime && mime.charset) {
     return mime.charset
@@ -70,7 +57,7 @@ export function contentType (str: string): boolean | string {
     return false
   }
 
-  var mime = str.indexOf('/') === -1
+  let mime = str.includes('/')
     ? lookup(str)
     : str
 
@@ -79,8 +66,8 @@ export function contentType (str: string): boolean | string {
   }
 
   // TODO: use content-type or other module
-  if (mime.indexOf('charset') === -1) {
-    var charset1 = charset(mime)
+  if (mime.includes('charset')) {
+    let charset1 = charset(mime)
     if (charset1) mime += '; charset=' + charset1.toLowerCase()
   }
 
@@ -97,10 +84,10 @@ export function extension (type: string): boolean | string {
   }
 
   // TODO: use media-typer
-  var match = EXTRACT_TYPE_REGEXP.exec(type)
+  let match = EXTRACT_TYPE_REGEXP.exec(type)
 
   // get extensions
-  var exts = match && extensions[match[1].toLowerCase()]
+  let exts = match && extensions[match[1].toLowerCase()]
 
   if (!exts || !exts.length) {
     return false
@@ -119,7 +106,7 @@ export function lookup (path: string): boolean | string {
   }
 
   // get the extension ("ext" or ".ext" or full path)
-  var extension = extname('x.' + path)
+  let extension = extname('x.' + path)
     .toLowerCase()
     .substr(1)
 
@@ -137,11 +124,11 @@ export function lookup (path: string): boolean | string {
 
 function populateMaps (extensions: any, types: any) {
   // source preference (least -> most)
-  var preference = ['nginx', 'apache', undefined, 'iana']
+  let preference = ['nginx', 'apache', undefined, 'iana']
 
   Object.keys(db).forEach(function forEachMimeType (type) {
-    var mime = db[type]
-    var exts = mime.extensions
+    let mime = db[type]
+    let exts = mime.extensions
 
     if (!exts || !exts.length) {
       return
@@ -151,12 +138,12 @@ function populateMaps (extensions: any, types: any) {
     extensions[type] = exts
 
     // extension -> mime
-    for (var i = 0; i < exts.length; i++) {
-      var extension = exts[i]
+    for (let i = 0; i < exts.length; i++) {
+      let extension = exts[i]
 
       if (types[extension]) {
-        var from = preference.indexOf(db[types[extension]].source)
-        var to = preference.indexOf(mime.source)
+        let from = preference.indexOf(db[types[extension]].source)
+        let to = preference.indexOf(mime.source)
 
         if (types[extension] !== 'application/octet-stream' &&
           (from > to || (from === to && types[extension].substr(0, 12) === 'application/'))) {
@@ -170,3 +157,15 @@ function populateMaps (extensions: any, types: any) {
     }
   })
 }
+
+/**
+ * Module exports.
+ * @public
+ */
+
+export const charsets = { lookup: charset }
+export const extensions = Object.create(null)
+export const types = Object.create(null)
+
+// Populate the extensions/types maps
+populateMaps(extensions, types)
