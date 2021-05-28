@@ -1,7 +1,9 @@
 /*!
- * mime-types
+ * mime_types
+ * TypeScript portage for Deno
  * Copyright(c) 2014 Jonathan Ong
  * Copyright(c) 2015 Douglas Christopher Wilson
+ * Copyright(c) 2021 stackinspector
  * MIT Licensed
  */
 
