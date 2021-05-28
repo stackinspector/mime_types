@@ -5,6 +5,8 @@
  * MIT Licensed
  */
 
+import { extname } from 'https://deno.land/std@0.97.0/path/mod.ts'
+
 type Source = {
   source?: 'apache' | 'iana' | 'nginx'
   charset?: string
@@ -16,27 +18,14 @@ type Extensions = Record<string, string[]>
 
 type Types = Record<string, string>
 
-/**
- * Module dependencies.
- * @private
- */
-
 const MIME_DB_URL = 'https://cdn.jsdelivr.net/gh/jshttp/mime-db@master/db.json'
-const db: Record<string, Source> = await (await fetch(MIME_DB_URL)).json()
-import { extname } from 'https://deno.land/std@0.97.0/path/mod.ts'
-
-/**
- * Module variables.
- * @private
- */
 
 const EXTRACT_TYPE_REGEXP = /^\s*([^;\s]*)(?:;|\s|$)/
 const TEXT_TYPE_REGEXP = /^text\//i
 
-/**
- * Get the default charset for a MIME type.
- */
+const db: Record<string, Source> = await (await fetch(MIME_DB_URL)).json()
 
+/** Get the default charset for a MIME type. */
 export function charset (type: string): false | string {
   if (!type || typeof type !== 'string') {
     return false
@@ -58,10 +47,7 @@ export function charset (type: string): false | string {
   return false
 }
 
-/**
- * Create a full Content-Type header given a MIME type or extension.
- */
-
+/** Create a full Content-Type header given a MIME type or extension. */
 export function contentType (str: string): false | string {
   // TODO: should this even be in this module?
   if (!str || typeof str !== 'string') {
@@ -85,10 +71,7 @@ export function contentType (str: string): false | string {
   return mime
 }
 
-/**
- * Get the default extension for a MIME type.
- */
-
+/** Get the default extension for a MIME type. */
 export function extension (type: string): false | string {
   if (!type || typeof type !== 'string') {
     return false
@@ -107,10 +90,7 @@ export function extension (type: string): false | string {
   return exts[0]
 }
 
-/**
- * Lookup the MIME type for a file path/extension.
- */
-
+/** Lookup the MIME type for a file path/extension. */
 export function lookup (path: string): false | string {
   if (!path || typeof path !== 'string') {
     return false
@@ -128,11 +108,7 @@ export function lookup (path: string): false | string {
   return types[extension] || false
 }
 
-/**
- * Populate the extensions and types maps.
- * @private
- */
-
+/** Populate the extensions and types maps. */
 function populateMaps (extensions: Extensions, types: Types) {
   // source preference (least -> most)
   const preference = ['nginx', 'apache', undefined, 'iana']
@@ -169,12 +145,8 @@ function populateMaps (extensions: Extensions, types: Types) {
   })
 }
 
-/**
- * Module exports.
- * @public
- */
-
 export const charsets = { lookup: charset }
+
 export const extensions: Extensions = Object.create(null)
 export const types: Types = Object.create(null)
 
