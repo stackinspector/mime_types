@@ -5,13 +5,24 @@
  * MIT Licensed
  */
 
+type Source = {
+  source?: 'apache' | 'iana' | 'nginx'
+  charset?: string
+  compressible?: boolean
+  extensions?: string[]
+}
+
+type Extensions = Record<string, string[]>
+
+type Types = Record<string, string>
+
 /**
  * Module dependencies.
  * @private
  */
 
 const MIME_DB_URL = 'https://cdn.jsdelivr.net/gh/jshttp/mime-db@master/db.json'
-const db = await (await fetch(MIME_DB_URL)).json()
+const db: Record<string, Source> = await (await fetch(MIME_DB_URL)).json()
 import { extname } from 'https://deno.land/std@0.97.0/path/mod.ts'
 
 /**
@@ -122,7 +133,7 @@ export function lookup (path: string): false | string {
  * @private
  */
 
-function populateMaps (extensions: any, types: any) {
+function populateMaps (extensions: Extensions, types: Types) {
   // source preference (least -> most)
   const preference = ['nginx', 'apache', undefined, 'iana']
 
@@ -164,8 +175,8 @@ function populateMaps (extensions: any, types: any) {
  */
 
 export const charsets = { lookup: charset }
-export const extensions = Object.create(null)
-export const types = Object.create(null)
+export const extensions: Extensions = Object.create(null)
+export const types: Types = Object.create(null)
 
 // Populate the extensions/types maps
 populateMaps(extensions, types)
