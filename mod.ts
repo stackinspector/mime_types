@@ -28,16 +28,12 @@ var TEXT_TYPE_REGEXP = /^text\//i
  * @public
  */
 
-exports.charset = charset
-exports.charsets = { lookup: charset }
-exports.contentType = contentType
-exports.extension = extension
-exports.extensions = Object.create(null)
-exports.lookup = lookup
-exports.types = Object.create(null)
+export const charsets = { lookup: charset }
+export const extensions = Object.create(null)
+export const types = Object.create(null)
 
 // Populate the extensions/types maps
-populateMaps(exports.extensions, exports.types)
+populateMaps(extensions, types)
 
 /**
  * Get the default charset for a MIME type.
@@ -46,7 +42,7 @@ populateMaps(exports.extensions, exports.types)
  * @return {boolean|string}
  */
 
-function charset (type) {
+export function charset (type) {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -74,14 +70,14 @@ function charset (type) {
  * @return {boolean|string}
  */
 
-function contentType (str) {
+export function contentType (str) {
   // TODO: should this even be in this module?
   if (!str || typeof str !== 'string') {
     return false
   }
 
   var mime = str.indexOf('/') === -1
-    ? exports.lookup(str)
+    ? lookup(str)
     : str
 
   if (!mime) {
@@ -90,8 +86,8 @@ function contentType (str) {
 
   // TODO: use content-type or other module
   if (mime.indexOf('charset') === -1) {
-    var charset = exports.charset(mime)
-    if (charset) mime += '; charset=' + charset.toLowerCase()
+    var charset1 = charset(mime)
+    if (charset1) mime += '; charset=' + charset1.toLowerCase()
   }
 
   return mime
@@ -104,7 +100,7 @@ function contentType (str) {
  * @return {boolean|string}
  */
 
-function extension (type) {
+export function extension (type) {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -113,7 +109,7 @@ function extension (type) {
   var match = EXTRACT_TYPE_REGEXP.exec(type)
 
   // get extensions
-  var exts = match && exports.extensions[match[1].toLowerCase()]
+  var exts = match && extensions[match[1].toLowerCase()]
 
   if (!exts || !exts.length) {
     return false
@@ -129,7 +125,7 @@ function extension (type) {
  * @return {boolean|string}
  */
 
-function lookup (path) {
+export function lookup (path) {
   if (!path || typeof path !== 'string') {
     return false
   }
@@ -143,7 +139,7 @@ function lookup (path) {
     return false
   }
 
-  return exports.types[extension] || false
+  return types[extension] || false
 }
 
 /**
