@@ -32,8 +32,8 @@ export function charset (type: string): false | string {
   }
 
   // TODO: use media-typer
-  let match = EXTRACT_TYPE_REGEXP.exec(type)
-  let mime = match && db[match[1].toLowerCase()]
+  const match = EXTRACT_TYPE_REGEXP.exec(type)
+  const mime = match && db[match[1].toLowerCase()]
 
   if (mime && mime.charset) {
     return mime.charset
@@ -67,7 +67,7 @@ export function contentType (str: string): false | string {
 
   // TODO: use content-type or other module
   if (mime.includes('charset')) {
-    let charset1 = charset(mime)
+    const charset1 = charset(mime)
     if (charset1) mime += '; charset=' + charset1.toLowerCase()
   }
 
@@ -84,10 +84,10 @@ export function extension (type: string): false | string {
   }
 
   // TODO: use media-typer
-  let match = EXTRACT_TYPE_REGEXP.exec(type)
+  const match = EXTRACT_TYPE_REGEXP.exec(type)
 
   // get extensions
-  let exts = match && extensions[match[1].toLowerCase()]
+  const exts = match && extensions[match[1].toLowerCase()]
 
   if (!exts || !exts.length) {
     return false
@@ -106,7 +106,7 @@ export function lookup (path: string): false | string {
   }
 
   // get the extension ("ext" or ".ext" or full path)
-  let extension = extname('x.' + path)
+  const extension = extname('x.' + path)
     .toLowerCase()
     .substr(1)
 
@@ -124,11 +124,11 @@ export function lookup (path: string): false | string {
 
 function populateMaps (extensions: any, types: any) {
   // source preference (least -> most)
-  let preference = ['nginx', 'apache', undefined, 'iana']
+  const preference = ['nginx', 'apache', undefined, 'iana']
 
   Object.keys(db).forEach(function forEachMimeType (type) {
-    let mime = db[type]
-    let exts = mime.extensions
+    const mime = db[type]
+    const exts = mime.extensions
 
     if (!exts || !exts.length) {
       return
@@ -139,11 +139,11 @@ function populateMaps (extensions: any, types: any) {
 
     // extension -> mime
     for (let i = 0; i < exts.length; i++) {
-      let extension = exts[i]
+      const extension = exts[i]
 
       if (types[extension]) {
-        let from = preference.indexOf(db[types[extension]].source)
-        let to = preference.indexOf(mime.source)
+        const from = preference.indexOf(db[types[extension]].source)
+        const to = preference.indexOf(mime.source)
 
         if (types[extension] !== 'application/octet-stream' &&
           (from > to || (from === to && types[extension].substr(0, 12) === 'application/'))) {
