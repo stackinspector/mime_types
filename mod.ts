@@ -37,12 +37,9 @@ populateMaps(extensions, types)
 
 /**
  * Get the default charset for a MIME type.
- *
- * @param {string} type
- * @return {boolean|string}
  */
 
-export function charset (type) {
+export function charset (type: string): boolean | string {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -65,12 +62,9 @@ export function charset (type) {
 
 /**
  * Create a full Content-Type header given a MIME type or extension.
- *
- * @param {string} str
- * @return {boolean|string}
  */
 
-export function contentType (str) {
+export function contentType (str: string): boolean | string {
   // TODO: should this even be in this module?
   if (!str || typeof str !== 'string') {
     return false
@@ -95,12 +89,9 @@ export function contentType (str) {
 
 /**
  * Get the default extension for a MIME type.
- *
- * @param {string} type
- * @return {boolean|string}
  */
 
-export function extension (type) {
+export function extension (type: string): boolean | string {
   if (!type || typeof type !== 'string') {
     return false
   }
@@ -120,12 +111,9 @@ export function extension (type) {
 
 /**
  * Lookup the MIME type for a file path/extension.
- *
- * @param {string} path
- * @return {boolean|string}
  */
 
-export function lookup (path) {
+export function lookup (path: string): boolean | string {
   if (!path || typeof path !== 'string') {
     return false
   }
@@ -147,7 +135,7 @@ export function lookup (path) {
  * @private
  */
 
-function populateMaps (extensions, types) {
+function populateMaps (extensions: any, types: any) {
   // source preference (least -> most)
   var preference = ['nginx', 'apache', undefined, 'iana']
 
